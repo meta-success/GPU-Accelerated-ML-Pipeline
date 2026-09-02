@@ -1,0 +1,43 @@
+services:
+  pipeline:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: gpu-accelerated-ml-pipeline:latest
+    working_dir: /app
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+    volumes:
+      - ../benchmark_results:/app/benchmark_results
+      - ../checkpoints:/app/checkpoints
+      - ../models:/app/models
+      - ../data:/app/data
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    # Override: docker compose run pipeline --epochs 1 --synthetic
+    command: ["--epochs", "3", "--batch-size", "128", "--max-samples", "4000"]
+
+  api:
+    image: gpu-accelerated-ml-pipeline:latest
+    working_dir: /app
+    entrypoint: ["python", "-m", "uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+    volumes:
+      - ../models:/app/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    profiles: ["api"]

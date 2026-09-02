@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+
+# Data & artifacts
+data/
+*.onnx
+*.pt
+*.pth
+*.keras
+*.h5
+*.ckpt
+checkpoints/
+models/
+outputs/
+wandb/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+.env.*
+
+# Keep result folders, ignore generated plots except sample
+benchmark_results/*.png
+benchmark_results/*.json
+!benchmark_results/.gitkeep
+!benchmark_results/sample_results.csv

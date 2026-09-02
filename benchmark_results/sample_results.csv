@@ -1,0 +1,8 @@
+framework,device,phase,batch_size,iterations,latency_ms,throughput_img_s,memory_mb,notes
+cuda_kernels,cpu,preprocess_cpu,128,50,12.400,10322.6,180.0,NumPy brightness + LCG salt-pepper
+cuda_kernels,cuda,preprocess_gpu,128,50,0.210,609523.8,420.0,backend=numba_cuda
+pytorch,cuda,inference,128,50,2.850,44912.3,780.0,CIFARCNN forward
+pytorch,cpu,inference,128,25,18.200,7033.0,510.0,same weights on CPU
+tensorflow,cuda,inference,128,25,4.100,31219.5,920.0,Keras Model.predict
+jax,cuda,inference,128,50,1.940,65979.4,640.0,JIT cnn_forward
+onnxruntime,cuda,inference,128,50,1.210,105785.1,560.0,"TensorrtExecutionProvider,CUDAExecutionProvider"

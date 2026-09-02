@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gpu-accelerated-ml-pipeline"
+version = "1.0.0"
+description = "End-to-end GPU-accelerated image classification pipeline verifying CUDA, JAX, PyTorch, TensorFlow, and ONNX."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "REWORK Portfolio" }]
+keywords = ["cuda", "jax", "pytorch", "tensorflow", "onnx", "gpu", "ml"]
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --disable-warnings"
+markers = [
+    "integration: end-to-end pipeline (PyTorch + ONNX)",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning",
+]

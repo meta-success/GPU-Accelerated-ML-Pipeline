@@ -1,0 +1,46 @@
+# GPU-Accelerated ML Pipeline
+# Python 3.10+ | CUDA 11.8+ recommended
+#
+# Install CUDA-specific wheels FIRST (see README), then:
+#   pip install -r requirements.txt
+
+# Core
+numpy>=1.24.0,<2.0.0
+pillow>=10.0.0
+tqdm>=4.66.0
+
+# PyTorch (CUDA 11.8) — prefer:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+torch>=2.1.0
+torchvision>=0.16.0
+
+# TensorFlow (GPU is included in the official wheel on Linux / WSL2)
+tensorflow>=2.14.0,<2.16.0
+
+# JAX — prefer the CUDA extra on Linux / WSL2:
+#   pip install -U "jax[cuda12]"
+#   or: pip install "jax[cuda11_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+jax>=0.4.20
+jaxlib>=0.4.20
+
+# ONNX
+onnx>=1.15.0
+onnxruntime-gpu>=1.16.0
+
+# CUDA kernels (pick the CuPy wheel that matches your CUDA toolkit)
+numba>=0.58.0
+cupy-cuda11x>=12.0.0
+
+# Benchmarking / reporting
+psutil>=5.9.0
+pandas>=2.0.0
+matplotlib>=3.8.0
+
+# Optional inference API
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.9
+
+# Dev / tests
+pytest>=7.4.0
+pytest-cov>=4.1.0
