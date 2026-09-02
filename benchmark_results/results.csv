@@ -1,0 +1,6 @@
+framework,device,phase,batch_size,iterations,latency_ms,throughput_img_s,memory_mb,notes
+preprocess_cpu,cpu,preprocess_cpu,64,5,5.739200004609302,11151.379974316966,528.84375,NumPy brightness + LCG salt-pepper
+preprocess_gpu,cpu,preprocess_gpu,64,5,1.8212199967820197,35141.27898501221,538.703125,backend=cpu
+pytorch,cpu,inference,64,5,28.502599999774247,2245.4091907582783,676.6796875,CIFARCNN forward
+tensorflow,cpu,inference,64,10,71.5104299975792,894.9743415354453,887.74609375,Keras Model.predict
+jax,cpu,inference,64,5,11.853699997300282,5399.158070018323,1026.23046875,JIT cnn_forward

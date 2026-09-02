@@ -25,7 +25,9 @@ jaxlib>=0.4.20
 
 # ONNX
 onnx>=1.15.0
-onnxruntime-gpu>=1.16.0
+onnxscript>=0.1.0
+onnxruntime-gpu>=1.16.0; sys_platform != "win32"
+onnxruntime>=1.16.0; sys_platform == "win32"
 
 # CUDA kernels (pick the CuPy wheel that matches your CUDA toolkit)
 numba>=0.58.0

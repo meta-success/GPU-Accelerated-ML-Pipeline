@@ -36,16 +36,24 @@ def export_pytorch_to_onnx(
     model = model.cpu().eval()
     dummy = torch.randn(batch_size, 3, 32, 32, dtype=torch.float32)
 
-    torch.onnx.export(
-        model,
-        dummy,
-        str(path),
+    export_kwargs = dict(
         opset_version=opset,
         input_names=["input"],
         output_names=["logits"],
         dynamic_axes={"input": {0: "batch"}, "logits": {0: "batch"}},
         do_constant_folding=True,
     )
+    # PyTorch 2.8+ defaults to the onnxscript exporter. Prefer the classic path
+    # so a CPU install still exports without that extra package.
+    try:
+        import inspect
+
+        if "dynamo" in inspect.signature(torch.onnx.export).parameters:
+            export_kwargs["dynamo"] = False
+    except (TypeError, ValueError):
+        pass
+
+    torch.onnx.export(model, dummy, str(path), **export_kwargs)
     logger.info("Exported ONNX model -> %s", path)
     return path
 
