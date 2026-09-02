@@ -4,8 +4,9 @@
 # Install CUDA-specific wheels FIRST (see README), then:
 #   pip install -r requirements.txt
 
-# Core
+# Core — keep NumPy 1.x so TensorFlow 2.15 still imports
 numpy>=1.24.0,<2.0.0
+ml-dtypes>=0.3.1,<0.4.0
 pillow>=10.0.0
 tqdm>=4.66.0
 
@@ -23,9 +24,9 @@ tensorflow>=2.14.0,<2.16.0
 jax>=0.4.20
 jaxlib>=0.4.20
 
-# ONNX
-onnx>=1.15.0
-onnxscript>=0.1.0
+# ONNX — stay below 1.17 so the checker works with TensorFlow's ml-dtypes 0.3.x.
+# Do not install onnxscript: it pulls ml-dtypes>=0.5 and breaks TensorFlow 2.15.
+onnx>=1.15.0,<1.17.0
 onnxruntime-gpu>=1.16.0; sys_platform != "win32"
 onnxruntime>=1.16.0; sys_platform == "win32"
 

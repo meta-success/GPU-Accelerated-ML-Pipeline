@@ -23,6 +23,17 @@ class ONNXSessionInfo:
     output_name: str
 
 
+def _require_onnx() -> None:
+    """Import onnx in a TF 2.15-compatible pin (1.16.x, not 1.19+)."""
+    try:
+        import onnx  # noqa: F401
+    except AttributeError as exc:
+        raise RuntimeError(
+            "Installed onnx is too new for ml-dtypes 0.3.x (TensorFlow 2.15). "
+            "In the venv run: pip uninstall -y onnxscript onnx-ir && pip install \"onnx==1.16.2\""
+        ) from exc
+
+
 def export_pytorch_to_onnx(
     model,
     path: Path,
@@ -32,6 +43,7 @@ def export_pytorch_to_onnx(
     """Export a PyTorch CIFAR CNN to ONNX (NCHW, float32, dynamic batch)."""
     import torch
 
+    _require_onnx()
     path.parent.mkdir(parents=True, exist_ok=True)
     model = model.cpu().eval()
     dummy = torch.randn(batch_size, 3, 32, 32, dtype=torch.float32)
@@ -59,6 +71,7 @@ def export_pytorch_to_onnx(
 
 
 def validate_onnx(path: Path) -> None:
+    _require_onnx()
     import onnx
 
     model = onnx.load(str(path))
