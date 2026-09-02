@@ -182,14 +182,6 @@ input[type="number"] {
   font: inherit;
 }
 
-.check {
-  display: flex;
-  gap: 0.45rem;
-  align-items: center;
-  margin: 0.35rem 0;
-  color: var(--ink);
-}
-
 .actions {
   display: flex;
   gap: 0.55rem;
@@ -307,9 +299,14 @@ th {
 }
 
 .drop {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 160px;
   border: 1px dashed var(--line);
-  padding: 1.2rem;
+  padding: 1rem;
   text-align: center;
   cursor: pointer;
   margin-bottom: 0.75rem;
@@ -317,6 +314,19 @@ th {
 
 .drop input {
   display: none;
+}
+
+#preview {
+  display: none;
+  max-width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border: 1px solid var(--line);
+  background: #0c100b;
+}
+
+#preview.show {
+  display: block;
 }
 
 .predict-out {

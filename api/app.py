@@ -235,14 +235,14 @@ def health() -> dict:
 
 @app.post("/predict", response_model=PredictResponse)
 async def predict(file: UploadFile = File(...)) -> PredictResponse:
+    raw = await file.read()
+    if not raw:
+        raise HTTPException(status_code=400, detail="Empty file")
+
     try:
         session, info = _load_session()
     except FileNotFoundError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
-
-    raw = await file.read()
-    if not raw:
-        raise HTTPException(status_code=400, detail="Empty file")
 
     try:
         tensor = _preprocess_image(raw)

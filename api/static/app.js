@@ -192,7 +192,9 @@ document.getElementById("clear-log").addEventListener("click", () => {
   logEl.textContent = "";
 });
 
-document.getElementById("predict-btn").addEventListener("click", async () => {
+const predictBtn = document.getElementById("predict-btn");
+
+predictBtn.addEventListener("click", async () => {
   const file = document.getElementById("image").files[0];
   if (!file) {
     predictOut.textContent = "Choose an image first.";
@@ -201,12 +203,63 @@ document.getElementById("predict-btn").addEventListener("click", async () => {
   await predictBlob(file);
 });
 
-document.getElementById("image").addEventListener("change", (event) => {
+const imageInput = document.getElementById("image");
+const preview = document.getElementById("preview");
+const dropZone = document.getElementById("drop");
+let previewUrl = null;
+
+function showPreview(file) {
+  if (!file || !file.type.startsWith("image/")) {
+    return;
+  }
+  if (previewUrl) {
+    URL.revokeObjectURL(previewUrl);
+  }
+  previewUrl = URL.createObjectURL(file);
+  preview.src = previewUrl;
+  preview.classList.add("show");
+  preview.hidden = false;
+  document.getElementById("drop-label").textContent = file.name;
+}
+
+function setImageFile(file) {
+  const transfer = new DataTransfer();
+  transfer.items.add(file);
+  imageInput.files = transfer.files;
+  showPreview(file);
+}
+
+imageInput.addEventListener("change", (event) => {
   const file = event.target.files[0];
-  document.getElementById("drop-label").textContent = file ? file.name : "Drop an image or click to choose";
+  if (file) {
+    showPreview(file);
+  } else {
+    preview.removeAttribute("src");
+    preview.classList.remove("show");
+    preview.hidden = true;
+    document.getElementById("drop-label").textContent = "Drop an image or click to choose";
+  }
+});
+
+dropZone.addEventListener("dragover", (event) => {
+  event.preventDefault();
+});
+
+dropZone.addEventListener("drop", (event) => {
+  event.preventDefault();
+  const file = event.dataTransfer.files[0];
+  if (file) {
+    setImageFile(file);
+  }
 });
 
 async function predictBlob(file) {
+  if (predictBtn.disabled) {
+    return;
+  }
+  predictBtn.disabled = true;
+  predictBtn.textContent = "Predicting…";
+  dropZone.style.pointerEvents = "none";
   try {
     const body = new FormData();
     body.append("file", file);
@@ -225,6 +278,10 @@ async function predictBlob(file) {
       <ul class="top3">${extra}</ul>`;
   } catch (err) {
     predictOut.textContent = err.message;
+  } finally {
+    predictBtn.disabled = false;
+    predictBtn.textContent = "Predict";
+    dropZone.style.pointerEvents = "";
   }
 }
 

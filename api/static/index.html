@@ -101,9 +101,10 @@
 
       <section class="panel predict-panel">
         <h2>Classify an image</h2>
-        <p class="hint">Upload any .jpg / .png. The model only knows CIFAR-10 labels (airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck). Photos are center-cropped and resized to 32×32.</p>
+        <p class="hint">Upload any .jpg / .png. The local ONNX model uses CIFAR-10 labels (airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck). Photos are center-cropped to 32×32.</p>
         <label class="drop" id="drop">
           <input id="image" type="file" accept="image/*" />
+          <img id="preview" alt="Selected image preview" hidden />
           <span id="drop-label">Drop an image or click to choose</span>
         </label>
         <button id="predict-btn" type="button">Predict</button>
