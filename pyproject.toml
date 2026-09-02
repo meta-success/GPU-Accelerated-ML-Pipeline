@@ -9,7 +9,7 @@ description = "End-to-end GPU-accelerated image classification pipeline verifyin
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "REWORK Portfolio" }]
+authors = [{ name = "meta-success", email = "kylewhite.dev.1997@gmail.com" }]
 keywords = ["cuda", "jax", "pytorch", "tensorflow", "onnx", "gpu", "ml"]
 
 [tool.setuptools.packages.find]
