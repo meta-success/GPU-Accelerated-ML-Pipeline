@@ -237,8 +237,8 @@ def train_jax(
     history: list[dict] = []
     jit_eval = jax.jit(accuracy_fn)
 
-    # pmap works with one device; run a smoke step so single-GPU demos still
-    # exercise XLA sharding (REWORK: pmap implementation).
+    # pmap works with one device; run a smoke step so single-GPU machines still
+    # exercise XLA sharding.
     try:
         smoke = build_pmap_step(config.learning_rate)
         replicated_smoke = jax.device_put_replicated(params, jax.devices())

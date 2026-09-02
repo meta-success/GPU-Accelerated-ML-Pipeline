@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GPU Pipeline Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div>
+        <p class="kicker">Local workstation</p>
+        <h1>GPU Pipeline Console</h1>
+      </div>
+      <div class="gpu-pill" id="gpu-pill">
+        <span class="dot" id="gpu-dot"></span>
+        <div>
+          <strong id="gpu-name">Checking hardware…</strong>
+          <span id="gpu-meta"></span>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel run-panel">
+        <h2>Run</h2>
+        <p class="hint">Pick a device, start a train + benchmark job, then download the files this machine produced.</p>
+
+        <fieldset>
+          <legend>Device</legend>
+          <label class="choice"><input type="radio" name="device" value="auto" checked /> Auto</label>
+          <label class="choice"><input type="radio" name="device" value="cpu" /> CPU</label>
+          <label class="choice"><input type="radio" name="device" value="cuda" /> GPU</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Stages</legend>
+          <label><input type="checkbox" name="fw" value="pytorch" checked /> PyTorch</label>
+          <label><input type="checkbox" name="fw" value="tensorflow" checked /> TensorFlow</label>
+          <label><input type="checkbox" name="fw" value="jax" checked /> JAX</label>
+          <label><input type="checkbox" name="fw" value="onnx" checked /> ONNX</label>
+        </fieldset>
+
+        <div class="grid-2">
+          <label>Epochs <input id="epochs" type="number" min="1" max="50" value="1" /></label>
+          <label>Batch size <input id="batch" type="number" min="1" max="1024" value="64" /></label>
+          <label>Max samples <input id="samples" type="number" min="8" max="50000" value="256" /></label>
+          <label>Bench iters <input id="iters" type="number" min="1" max="500" value="5" /></label>
+        </div>
+
+        <label class="check"><input id="synthetic" type="checkbox" checked /> Synthetic data (no CIFAR download)</label>
+        <label class="check"><input id="skip-train" type="checkbox" /> Skip training (random weights, inference only)</label>
+
+        <div class="actions">
+          <button id="run-btn" type="button">Run pipeline</button>
+          <button id="stop-btn" type="button" class="ghost" disabled>Stop</button>
+        </div>
+        <p class="status-line" id="job-status">Idle. Ready to run.</p>
+      </section>
+
+      <section class="panel log-panel">
+        <div class="panel-head">
+          <h2>Live log</h2>
+          <button id="clear-log" type="button" class="textish">Clear</button>
+        </div>
+        <pre id="log" aria-live="polite"></pre>
+      </section>
+
+      <section class="panel results-panel">
+        <div class="panel-head">
+          <h2>Results</h2>
+          <span class="tag" id="result-source"></span>
+        </div>
+        <div class="downloads" id="downloads"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Framework</th>
+                <th>Device</th>
+                <th>Phase</th>
+                <th>Latency ms</th>
+                <th>img/s</th>
+              </tr>
+            </thead>
+            <tbody id="result-body">
+              <tr><td colspan="5">Run the pipeline to fill this table.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figure class="plot-wrap" id="plot-wrap" hidden>
+          <img id="plot" alt="Throughput chart" />
+        </figure>
+      </section>
+
+      <section class="panel predict-panel">
+        <h2>Classify an image</h2>
+        <p class="hint">Uses the exported ONNX model after a successful run that included the ONNX stage. CIFAR-10 labels, 32×32 internally.</p>
+        <label class="drop" id="drop">
+          <input id="image" type="file" accept="image/*" />
+          <span id="drop-label">Drop an image or click to choose</span>
+        </label>
+        <button id="predict-btn" type="button">Predict</button>
+        <div id="predict-out" class="predict-out"></div>
+      </section>
+    </main>
+
+    <footer>
+      CLI still works: <code>python -m src --device cpu</code>
+      · API docs <a href="/docs">/docs</a>
+    </footer>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

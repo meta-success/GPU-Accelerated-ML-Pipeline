@@ -1,1 +1,1 @@
-"""FastAPI entry so ``uvicorn api.app:app`` works from the repo root."""
+"""Allow ``uvicorn api.app:app`` and ``python -m api`` from the repo root."""

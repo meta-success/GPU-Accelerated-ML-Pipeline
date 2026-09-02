@@ -14,11 +14,13 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     python_requires=">=3.10",
-    packages=find_packages(include=["src", "src.*"]),
+    packages=find_packages(include=["src", "src.*", "api", "api.*"]),
     include_package_data=True,
+    package_data={"api": ["static/*"]},
     entry_points={
         "console_scripts": [
             "gpu-pipeline=src.pipeline:main",
+            "gpu-pipeline-ui=api.__main__:main",
         ]
     },
 )

@@ -1,59 +1,45 @@
-# Performance report (template)
+# Reading pipeline benchmarks
 
-This file is the **narrative** you attach to REWORK. After you run the pipeline on a real GPU, replace the tables with the generated copy at `benchmark_results/PERFORMANCE_REPORT.md`.
+After a run, the console can download these files, or you can copy them from `benchmark_results/`:
 
-## Machine (fill in)
-
-| Item | Value |
+| File | Contents |
 | --- | --- |
-| GPU | e.g. NVIDIA RTX 4070 Laptop |
-| Driver / CUDA | from `nvidia-smi` |
-| OS | Windows 11 + WSL2 Ubuntu 22.04 / Docker |
-| Python | 3.10.x |
-| PyTorch | 2.x + cu118 |
-| TensorFlow | 2.15 |
-| JAX | 0.4.x cuda |
-| ORT providers | TensorrtExecutionProvider, CUDAExecutionProvider |
+| `results.csv` | One row per framework / device / phase |
+| `results.json` | Same numbers plus run metadata |
+| `throughput.png` | Throughput chart |
+| `PERFORMANCE_REPORT.md` | Markdown summary generated on your machine |
 
-## Pipeline settings
+`sample_results.csv` is a **worked example**, not a measurement of the computer you are using. Treat the console table as sample data until `results.csv` exists.
 
-- Dataset: CIFAR-10 subset (`--max-samples 4000`)
-- Epochs: 3
-- Batch size: 128
-- Augmentation: brightness 1.15, salt-and-pepper p=0.02 (Numba CUDA)
+## What the columns mean
 
-## Example numbers
+- **Latency (ms)** — average time for one batched call after warmup (`cuda.synchronize` / `block_until_ready` where it applies).
+- **Throughput (img/s)** — `batch_size / latency`.
+- **Memory (MB)** — peak allocated bytes from `torch.cuda.max_memory_allocated` when CUDA is active.
 
-These rows match `benchmark_results/sample_results.csv` and are **not** a substitute for your run.
+Typical pattern on a mid-range NVIDIA GPU (not a guarantee):
 
-| Framework | Device | Phase | Latency (ms) | img/s |
-| --- | --- | --- | --- | --- |
-| CUDA kernels | CPU | preprocess | 12.4 | 10.3k |
-| CUDA kernels | GPU | preprocess | 0.21 | 610k |
-| PyTorch | CPU | inference | 18.2 | 7.0k |
-| PyTorch | GPU | inference | 2.85 | 44.9k |
-| TensorFlow | GPU | inference | 4.10 | 31.2k |
-| JAX | GPU | inference | 1.94 | 66.0k |
-| ONNX Runtime | GPU | inference | 1.21 | 106k |
+- CUDA preprocess: large GPU vs CPU gap on a full batch
+- Training: GPU wall-clock often a few times faster than CPU
+- Inference: ONNX Runtime / TensorRT is often the fastest serving path
+- JAX: first JIT call is compile time; ignore it and read the warmed loop
 
-### Speedups implied by the sample
+## Accuracy
 
-- Preprocess GPU vs CPU: **~59×** (matches the “batch processing” talking point when kernels land on a real GPU)
-- PyTorch inference GPU vs CPU: **~6.4×**
-- ONNX GPU vs PyTorch GPU: **~2.4×** on this toy CNN (TensorRT EP helps more on larger models)
+A 4k-image, few-epoch run is for wiring and speed, not leaderboard accuracy. Validation often lands roughly in the 0.25–0.55 range. For a stronger model:
 
-## Accuracy (expect this to be modest)
+```bash
+python -m src --max-samples 50000 --epochs 20
+```
 
-A 4k-image, 3-epoch demo is for **skill evidence**, not SOTA. Val accuracy often lands in the 0.25–0.55 range depending on seed and subset. Train `--max-samples 50000 --epochs 20` if you want a stronger accuracy slide.
+## Memory when three frameworks share one GPU
 
-## Memory
+The process sets `XLA_PYTHON_CLIENT_PREALLOCATE=false` and TensorFlow memory growth so PyTorch, TensorFlow, and JAX are less likely to OOM each other. If you still OOM, run fewer stages (for example PyTorch + ONNX only).
 
-Peak allocated bytes come from `torch.cuda.max_memory_allocated` between stages. JAX/TF may allocate extra pools; the pipeline sets `XLA_PYTHON_CLIENT_PREALLOCATE=false` and TF memory growth to keep three frameworks from killing each other.
-
-## How to regenerate
+## Reproduce from the CLI
 
 ```bash
 python -m src --epochs 3 --batch-size 128 --max-samples 4000
 ```
 
-Commit `benchmark_results/results.csv`, `throughput.png`, and `PERFORMANCE_REPORT.md` with the Loom.
+Or open the web console (`python -m api`) and use **Run pipeline** → **all results (.zip)**.

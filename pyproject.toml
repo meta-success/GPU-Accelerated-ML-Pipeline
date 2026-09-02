@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "gpu-accelerated-ml-pipeline"
 version = "1.0.0"
-description = "End-to-end GPU-accelerated image classification pipeline verifying CUDA, JAX, PyTorch, TensorFlow, and ONNX."
+description = "End-to-end GPU-accelerated image classification pipeline (CUDA, JAX, PyTorch, TensorFlow, ONNX) with a local web console."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -13,7 +13,10 @@ authors = [{ name = "meta-success", email = "kylewhite.dev.1997@gmail.com" }]
 keywords = ["cuda", "jax", "pytorch", "tensorflow", "onnx", "gpu", "ml"]
 
 [tool.setuptools.packages.find]
-include = ["src*"]
+include = ["src*", "api*"]
+
+[tool.setuptools.package-data]
+api = ["static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
