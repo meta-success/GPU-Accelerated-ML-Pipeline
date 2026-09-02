@@ -151,3 +151,13 @@ def normalized_copy(dataset: ArrayDataset) -> ArrayDataset:
         x_test=_normalize(dataset.x_test),
         y_test=dataset.y_test.copy(),
     )
+
+
+def export_cifar_png(image_01: np.ndarray, path: Path) -> Path:
+    """Write a single NHWC float [0, 1] CIFAR image as PNG."""
+    from PIL import Image
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    arr = np.clip(image_01 * 255.0, 0, 255).astype(np.uint8)
+    Image.fromarray(arr, mode="RGB").save(path)
+    return path

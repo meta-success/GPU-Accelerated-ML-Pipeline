@@ -1,7 +1,7 @@
 framework,device,phase,batch_size,iterations,latency_ms,throughput_img_s,memory_mb,notes
-preprocess_cpu,cpu,preprocess_cpu,64,5,4.535140004009008,14112.022990122638,527.58203125,NumPy brightness + LCG salt-pepper
-preprocess_gpu,cpu,preprocess_gpu,64,5,1.145140000153333,55888.362987434266,537.4921875,backend=cpu
-pytorch,cpu,inference,64,5,23.27168000047095,2750.1237555133457,708.08203125,CIFARCNN forward
-tensorflow,cpu,inference,64,10,64.40304999996442,993.7417560198679,914.8671875,Keras Model.predict
-jax,cpu,inference,64,5,10.71968000032939,5970.327472278411,1048.1875,JIT cnn_forward
-onnxruntime,cpu,inference,64,5,14.58188000251539,4389.008823893759,1023.65234375,CPUExecutionProvider
+preprocess_cpu,cpu,preprocess_cpu,64,5,4.0968600020278245,15621.720041280856,336.12109375,NumPy brightness + LCG salt-pepper
+preprocess_gpu,cpu,preprocess_gpu,64,5,1.1810199997853488,54190.44555691863,346.3046875,backend=cpu
+pytorch,cpu,inference,64,5,22.40252000046894,2856.821464668275,527.109375,CIFARCNN forward
+tensorflow,cpu,inference,64,10,75.21391000191215,850.9064347056673,1096.984375,Keras Model.predict
+jax,cpu,inference,64,5,12.220499996328726,5237.101593161232,1243.78125,JIT cnn_forward
+onnxruntime,cpu,inference,64,5,14.582940004765987,4388.689796370523,1253.171875,CPUExecutionProvider

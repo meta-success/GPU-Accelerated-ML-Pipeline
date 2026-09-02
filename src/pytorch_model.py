@@ -187,6 +187,8 @@ def train_pytorch(
         running_loss = 0.0
         seen = 0
         for xb, yb in iterate_batches(x_tr, y_train, config.batch_size, shuffle=True, seed=config.seed + epoch):
+            if np.random.default_rng(config.seed + epoch + seen).random() < 0.5:
+                xb = np.ascontiguousarray(xb[:, :, :, ::-1])
             inputs = torch.from_numpy(xb).to(device)
             targets = torch.from_numpy(yb.astype(np.int64)).to(device)
             optimizer.zero_grad(set_to_none=True)

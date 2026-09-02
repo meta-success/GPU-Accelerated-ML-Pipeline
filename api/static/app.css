@@ -324,6 +324,21 @@ th {
   font-size: 0.92rem;
 }
 
+.top3 {
+  margin: 0.55rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.top3 li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.15rem 0;
+}
+
 .bar {
   height: 8px;
   background: #0c100b;

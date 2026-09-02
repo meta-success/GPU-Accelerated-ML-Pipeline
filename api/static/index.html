@@ -48,7 +48,7 @@
         </fieldset>
 
         <div class="grid-2">
-          <label>Epochs <input id="epochs" type="number" min="1" max="50" value="1" /></label>
+          <label>Epochs <input id="epochs" type="number" min="1" max="50" value="3" /></label>
           <label>Batch size <input id="batch" type="number" min="1" max="1024" value="64" /></label>
           <label>Max samples <input id="samples" type="number" min="8" max="50000" value="256" /></label>
           <label>Bench iters <input id="iters" type="number" min="1" max="500" value="5" /></label>
@@ -101,7 +101,7 @@
 
       <section class="panel predict-panel">
         <h2>Classify an image</h2>
-        <p class="hint">Uses the exported ONNX model after a successful run that included the ONNX stage. CIFAR-10 labels, 32×32 internally.</p>
+        <p class="hint">Upload any .jpg / .png. The model only knows CIFAR-10 labels (airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck). Photos are center-cropped and resized to 32×32.</p>
         <label class="drop" id="drop">
           <input id="image" type="file" accept="image/*" />
           <span id="drop-label">Drop an image or click to choose</span>

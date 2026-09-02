@@ -68,11 +68,17 @@ class RunBody(BaseModel):
     warmup: int = Field(default=10, ge=0, le=100)
 
 
+class ClassScore(BaseModel):
+    label: str
+    confidence: float
+
+
 class PredictResponse(BaseModel):
     label: str
     class_id: int = Field(ge=0, lt=NUM_CLASSES)
     confidence: float
     probabilities: List[float]
+    top3: List[ClassScore]
 
 
 def _artifact_flags() -> dict[str, bool]:
@@ -97,7 +103,14 @@ def _preprocess_image(raw: bytes):
     import numpy as np
     from PIL import Image
 
-    image = Image.open(io.BytesIO(raw)).convert("RGB").resize((32, 32))
+    image = Image.open(io.BytesIO(raw)).convert("RGB")
+    width, height = image.size
+    side = min(width, height)
+    left = (width - side) // 2
+    top = (height - side) // 2
+    image = image.crop((left, top, left + side, top + side))
+    resample = Image.Resampling.BICUBIC if hasattr(Image, "Resampling") else Image.BICUBIC
+    image = image.resize((32, 32), resample)
     arr = np.asarray(image, dtype=np.float32) / 255.0
     mean = np.array(CIFAR10_MEAN, dtype=np.float32)
     std = np.array(CIFAR10_STD, dtype=np.float32)
@@ -243,11 +256,13 @@ async def predict(file: UploadFile = File(...)) -> PredictResponse:
     exp = np.exp(logits)
     probs = exp / exp.sum()
     class_id = int(probs.argmax())
+    top_idx = np.argsort(probs)[::-1][:3]
     return PredictResponse(
         label=CIFAR10_CLASSES[class_id],
         class_id=class_id,
         confidence=float(probs[class_id]),
         probabilities=[float(p) for p in probs],
+        top3=[ClassScore(label=CIFAR10_CLASSES[int(i)], confidence=float(probs[int(i)])) for i in top_idx],
     )
 
 

@@ -198,9 +198,18 @@ document.getElementById("predict-btn").addEventListener("click", async () => {
     predictOut.textContent = "Choose an image first.";
     return;
   }
-  const body = new FormData();
-  body.append("file", file);
+  await predictBlob(file);
+});
+
+document.getElementById("image").addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  document.getElementById("drop-label").textContent = file ? file.name : "Drop an image or click to choose";
+});
+
+async function predictBlob(file) {
   try {
+    const body = new FormData();
+    body.append("file", file);
     const res = await fetch("/predict", { method: "POST", body });
     const data = await res.json();
     if (!res.ok) {
@@ -208,17 +217,16 @@ document.getElementById("predict-btn").addEventListener("click", async () => {
       return;
     }
     const pct = Math.round(data.confidence * 100);
+    const extra = (data.top3 || [])
+      .map((row) => `<li><span>${row.label}</span><span>${Math.round(row.confidence * 100)}%</span></li>`)
+      .join("");
     predictOut.innerHTML = `<strong>${data.label}</strong> · ${pct}% confidence
-      <div class="bar"><span style="width:${pct}%"></span></div>`;
+      <div class="bar"><span style="width:${pct}%"></span></div>
+      <ul class="top3">${extra}</ul>`;
   } catch (err) {
     predictOut.textContent = err.message;
   }
-});
-
-document.getElementById("image").addEventListener("change", (event) => {
-  const file = event.target.files[0];
-  document.getElementById("drop-label").textContent = file ? file.name : "Drop an image or click to choose";
-});
+}
 
 refreshStatus().then(refreshResults).catch((err) => {
   jobStatus.textContent = err.message;
